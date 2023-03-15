@@ -12,7 +12,7 @@ using server;
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230313135025_Init")]
+    [Migration("20230315084519_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -166,6 +166,9 @@ namespace server.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("FileId");
 

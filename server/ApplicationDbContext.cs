@@ -14,7 +14,7 @@ namespace server
         
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Models.List> Lists { get; set; }
+        public DbSet<List> Lists { get; set; }
 
         public DbSet<Column> Columns { get; set; }
 

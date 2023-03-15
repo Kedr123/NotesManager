@@ -164,6 +164,9 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("FileId");
 
                     b.ToTable("Users");

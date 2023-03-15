@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EntityFramework.Exceptions.Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
 
@@ -13,20 +14,29 @@ namespace server.Controllers
         public UserController(ApplicationDbContext dbContext) => (this.dbContext) = (dbContext);
 
         [HttpPost]
-        public async Task<User?> Registration(User user)
+        public async Task<ActionResult<User>> Registration(User user)
         {
 
 
             if (user == null)
             {
-                return null;
+                return  BadRequest();
             }
 
-            dbContext.Users.Add(user);
-            await dbContext.SaveChangesAsync();
+            try
+            {
+                dbContext.Users.Add(user);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                 return BadRequest(new {errors = new {Email = new string[1] { "Not unique" } }});
+            }
+            
+            
 
 
-            return user;
+            return Ok(user);
         }
     }
 }
