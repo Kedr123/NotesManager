@@ -52,12 +52,12 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.Use(async (context, next) =>
+app.Use((context, next) =>
 {
 
     if(context.Request.Path != "/api/auth/refresh")
     {
-        await next.Invoke();
+        return next();
     }
 
     context.Request.Headers.Remove("Authorization");
@@ -70,7 +70,7 @@ app.Use(async (context, next) =>
         context.Request.Headers.Append("Authorization", "Bearer " + token);
     }
 
-    await next.Invoke();
+    return next();
 
 
 });
