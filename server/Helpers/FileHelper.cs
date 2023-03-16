@@ -32,6 +32,25 @@
 
             return newFiles;
         }
+        
+        public static async Task<Models.File> FileUpload(ApplicationDbContext dbContext, IWebHostEnvironment appEnvironment, IFormFile formFiles)
+        {
+            string formatFile = formFiles.FileName.Split('.')[formFiles.FileName.Split('.').Length - 1];
+            string newFileName = string.Format(@"{0}.{1}", Guid.NewGuid(), formatFile);
+
+            string path = appEnvironment.WebRootPath + "\\Files\\" + newFileName;
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                await formFiles.CopyToAsync(fileStream);
+            }
+
+            var file = new Models.File { FileName = newFileName, OldFileName = formFiles.FileName };
+            dbContext.Files.Add(file);
+            dbContext.SaveChanges();
+
+            return file;
+        }
 
     }
 }

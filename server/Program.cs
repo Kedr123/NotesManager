@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using server;
+using server.Interfaces;
 using server.Models;
+using server.Repositories;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -42,6 +44,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultLink")));
+
+builder.Services.AddScoped<IRepositoryList, RepositoryList>();
 
 
 
