@@ -46,6 +46,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultLink")));
 
 builder.Services.AddScoped<IRepositoryList, RepositoryList>();
+builder.Services.AddScoped<IRepositoryColumn, RepositoryColumn>();
 
 
 

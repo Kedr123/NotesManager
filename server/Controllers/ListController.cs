@@ -20,7 +20,7 @@ namespace server.Controllers
         {
             //return Ok(Id);
 
-            var list = repositoryList.GetList(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id").Value));
+            var list = repositoryList.GetList(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (list == null) NotFound();
 
@@ -30,7 +30,7 @@ namespace server.Controllers
         [HttpGet]
         public ActionResult GetAllUserList()
         {
-            var list = repositoryList.GetAllUserLists(Convert.ToInt64(HttpContext.User.FindFirst("Id").Value));
+            var list = repositoryList.GetAllUserLists(Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (list == null) NotFound(null);
 
@@ -45,7 +45,7 @@ namespace server.Controllers
             if (request == null) NotFound(null);
 
 
-            var list = await repositoryList.CreateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id").Value));
+            var list = await repositoryList.CreateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
             
 
             return Ok(list);
@@ -55,7 +55,7 @@ namespace server.Controllers
         [RequestSizeLimit(1024 * 1024 * 10)]
         public async Task<ActionResult<Models.List>> UpdateList([FromForm] RequestUpdateList request)
         {
-            var list = await repositoryList.UpdateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id").Value));
+            var list = await repositoryList.UpdateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
             
             if (list == null) NotFound(null);
 
