@@ -4,6 +4,7 @@ using server.Interfaces;
 using server.Models;
 using server.Models.Requests;
 using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 
 namespace server.Repositories
 {
@@ -37,16 +38,34 @@ namespace server.Repositories
             return list;
         }
 
-        public async Task<List?> DeleteListAsync(long ListId)
+        public async Task<List?> DeleteListAsync(long ListId, long UserId)
         {
-            var list = dbContext.Lists.Find(ListId);
-            dbContext.Lists.Where(u => u.Id == ListId).ExecuteDelete();
+            var list = dbContext.Lists.Where(opt => opt.Id == ListId && opt.User.Id == UserId).Include(u =>u.File).FirstOrDefault();
+
+            if (list == null) return null;            
+
+            if (list.File != null)
+            {
+                var file = dbContext.Files.Find(list.File.Id);
+
+                if (file != null)
+                {
+                    FileHelper.FileDelete(dbContext,webHostEnvironment, file.FileName);
+                    dbContext.Files.Remove(file);
+                    
+                }
+            }
+            dbContext.Lists.Remove(list);
+
+            
+
             await dbContext.SaveChangesAsync();
             return list;
         }
 
         public List<List> GetAllUserLists(long UserId)
         {
+            //System.IO.File.Delete(webHostEnvironment.WebRootPath + "\\Files\\1649b550-d81c-408c-b8a1-12f22df6ef86.xls");
             return dbContext.Lists.Where(opt => opt.User.Id == UserId).Include(u => u.File).ToList();
         }
 

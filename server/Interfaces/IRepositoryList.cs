@@ -12,7 +12,7 @@ namespace server.Interfaces
 
         Task<Models.List?> UpdateListAsync(RequestUpdateList requestList, long UserId);
 
-        Task<Models.List?> DeleteListAsync(long ListId);
+        Task<Models.List?> DeleteListAsync(long ListId, long UserId);
 
         
     }

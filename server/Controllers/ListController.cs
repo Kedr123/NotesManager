@@ -61,5 +61,15 @@ namespace server.Controllers
 
             return Ok(list);
         }
+
+        [HttpDelete, Route("{Id}")]
+        public async Task<ActionResult> DeleteList(long Id)
+        {
+            var list = await repositoryList.DeleteListAsync(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
+
+            if (list == null) NotFound(null);
+
+            return Ok(list);
+        }
     }
 }
