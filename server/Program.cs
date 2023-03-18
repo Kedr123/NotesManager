@@ -47,6 +47,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(builder
 
 builder.Services.AddScoped<IRepositoryList, RepositoryList>();
 builder.Services.AddScoped<IRepositoryColumn, RepositoryColumn>();
+builder.Services.AddScoped<IRepositoryNote, RepositoryNote>();
 
 
 
