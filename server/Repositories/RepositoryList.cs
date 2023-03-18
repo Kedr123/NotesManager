@@ -40,10 +40,16 @@ namespace server.Repositories
 
         public async Task<List?> DeleteListAsync(long ListId, long UserId)
         {
+            // Получение листа с его изображением
             var list = dbContext.Lists.Where(opt => opt.Id == ListId && opt.User.Id == UserId).Include(u =>u.File).FirstOrDefault();
+            
 
-            if (list == null) return null;            
+            if (list == null) return null;
 
+            // Получение файлов заметок, которые удалятся при удалении листа
+            var noteFiles = dbContext.NoteFiles.Where(opt => opt.Note.Column.list.Id == ListId).Include(u => u.File).ToList();
+
+            // Удаление изображения листа
             if (list.File != null)
             {
                 var file = dbContext.Files.Find(list.File.Id);
@@ -55,6 +61,25 @@ namespace server.Repositories
                     
                 }
             }
+
+            // Удаление всех файлов, относящихся к заметкам в листе
+            if(noteFiles != null)
+            {
+                List<string> filesName = new List<string>();
+                List<Models.File> files = new List<Models.File>();
+
+                foreach (var element in noteFiles)
+                {
+                    filesName.Add(element.File.FileName);
+                    files.Add(element.File);
+                }
+
+                FileHelper.FilesDelete(dbContext, webHostEnvironment, filesName);
+                dbContext.Files.RemoveRange(files);
+
+            }
+
+
             dbContext.Lists.Remove(list);
 
             

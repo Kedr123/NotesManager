@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using server.Helpers;
 using server.Interfaces;
 using server.Models;
 using server.Models.Requests;
+using System.Collections.Generic;
 
 namespace server.Repositories
 {
@@ -35,6 +37,26 @@ namespace server.Repositories
             var column = dbContext.Columns.Where(opt => opt.Id == ColumnId && opt.list.User.Id == UserId).FirstOrDefault();
 
             if (column == null) return null;
+
+            // Получение файлов заметок, которые удалятся при удалении колонки
+            var noteFiles = dbContext.NoteFiles.Where(opt => opt.Note.Column.Id == ColumnId).Include(u => u.File).ToList();
+
+            // Удаление всех файлов, относящихся к заметкам в колонке
+            if (noteFiles != null)
+            {
+                List<string> filesName = new List<string>();
+                List<Models.File> files = new List<Models.File>();
+
+                foreach (var element in noteFiles)
+                {
+                    filesName.Add(element.File.FileName);
+                    files.Add(element.File);
+                }
+
+                FileHelper.FilesDelete(dbContext, webHostEnvironment, filesName);
+                dbContext.Files.RemoveRange(files);
+
+            }
 
             dbContext.Columns.Remove(column);
             await dbContext.SaveChangesAsync();
