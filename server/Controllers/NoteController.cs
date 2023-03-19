@@ -16,7 +16,7 @@ namespace server.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateNote([FromForm] RequestCreateNote request)
         {
-            var note = await repositoryNote.CreateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")));
+            var note = await repositoryNote.CreateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (note == null) BadRequest();
 
@@ -27,7 +27,9 @@ namespace server.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateNote([FromForm] RequestUpdateNote request)
         {
-            var note = await repositoryNote.UpdateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")));
+            //return Ok(request);
+
+            var note = await repositoryNote.UpdateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (note == null) NotFound();
 
@@ -38,7 +40,7 @@ namespace server.Controllers
         [HttpDelete, Route("{id}")]
         public async Task<ActionResult> DeleteNote(long Id)
         {
-            var note = await repositoryNote.DeleteNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")));
+            var note = await repositoryNote.DeleteNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (note == null) NotFound();
 
@@ -49,7 +51,7 @@ namespace server.Controllers
         [HttpGet, Route("{id}")]
         public ActionResult GetNote(long Id)
         {
-            var note = repositoryNote.GetNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")));
+            var note = repositoryNote.GetNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             if (note == null) NotFound();
 
@@ -59,11 +61,11 @@ namespace server.Controllers
         [HttpGet, Route("column/{id}")]
         public ActionResult GetAllNotesColumn(long Id)
         {
-            var note = repositoryNote.GetAllNotesColumn(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")));
+            var notes = repositoryNote.GetAllNotesColumn(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (note == null) NotFound();
+            if (notes == null) NotFound();
 
-            return Ok(note);
+            return Ok(notes);
         }
 
     }

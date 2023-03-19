@@ -76,6 +76,7 @@ namespace server.Repositories
 
                 FileHelper.FilesDelete(dbContext, webHostEnvironment, filesName);
                 dbContext.Files.RemoveRange(files);
+                await dbContext.SaveChangesAsync();
 
             }
 

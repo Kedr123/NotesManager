@@ -38,8 +38,11 @@ namespace server.Repositories
 
             if (column == null) return null;
 
+            
             // Получение файлов заметок, которые удалятся при удалении колонки
             var noteFiles = dbContext.NoteFiles.Where(opt => opt.Note.Column.Id == ColumnId).Include(u => u.File).ToList();
+
+            
 
             // Удаление всех файлов, относящихся к заметкам в колонке
             if (noteFiles != null)
@@ -49,14 +52,19 @@ namespace server.Repositories
 
                 foreach (var element in noteFiles)
                 {
+                    if(element.File?.FileName == null) continue;
+
                     filesName.Add(element.File.FileName);
                     files.Add(element.File);
                 }
 
                 FileHelper.FilesDelete(dbContext, webHostEnvironment, filesName);
                 dbContext.Files.RemoveRange(files);
+                await dbContext.SaveChangesAsync();
 
             }
+
+
 
             dbContext.Columns.Remove(column);
             await dbContext.SaveChangesAsync();

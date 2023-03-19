@@ -67,6 +67,7 @@
         
         public static int FilesDelete(ApplicationDbContext dbContext, IWebHostEnvironment appEnvironment, List<string> filesName)
         {
+
             int count = 0;
 
             foreach (var file in filesName)

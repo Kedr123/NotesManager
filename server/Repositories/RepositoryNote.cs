@@ -5,6 +5,7 @@ using server.Interfaces;
 using server.Models;
 using server.Models.Requests;
 using server.Models.Respons;
+using System.IO;
 
 namespace server.Repositories
 {
@@ -84,7 +85,7 @@ namespace server.Repositories
 
         public List<ResponseGetNoteAllFile>? GetAllNotesColumn(long ColumnId, long UserId)
         {
-            var listNote = dbContext.Notes.Where(opt => opt.Column.Id == ColumnId && opt.Column.list.Id == UserId).ToList();
+            var listNote = dbContext.Notes.Where(opt => opt.Column.Id == ColumnId && opt.Column.list.User.Id == UserId).ToList();
             var response = new List<ResponseGetNoteAllFile>();
 
             if (listNote == null) return null;
@@ -152,9 +153,13 @@ namespace server.Repositories
 
                 foreach(var id in request.IdNoteFilesDelete)
                 {
-                    var file = dbContext.NoteFiles.Where(opt=>opt.Id == id && opt.Note.Column.list.User.Id==UserId).FirstOrDefault();
+                    var file = dbContext.NoteFiles.Where(opt=>opt.Id == id && opt.Note.Column.list.User.Id==UserId).Include(u=>u.File).FirstOrDefault();
 
-                    if(file != null) noteFiles.Add(file);
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine(file.File.FileName);
+                    Console.BackgroundColor = ConsoleColor.Black;
+
+                    if (file != null) noteFiles.Add(file);
 
                 }
 
