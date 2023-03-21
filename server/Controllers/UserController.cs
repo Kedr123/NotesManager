@@ -36,7 +36,7 @@ namespace server.Controllers
             
 
 
-            return Ok(user);
+            return Ok(new { user });
         }
     }
 }

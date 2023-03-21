@@ -25,7 +25,7 @@ namespace server.Controllers
 
 
         [HttpPost]
-        public  string PostAuth(string Email, string Password)
+        public  ActionResult PostAuth(string Email, string Password)
         {
             
             var user = dbContext.Users.Where(opt => opt.Email == Email && opt.Password == Password).FirstOrDefault();
@@ -55,19 +55,19 @@ namespace server.Controllers
 
             }
 
-            return jwtAccess;
+            return Ok(new { jwtAccess, jwtRefresh });
         }
 
         [HttpPost("refresh"), Authorize]
-        public string? RefreshTokens()
+        public ActionResult RefreshTokens()
         {
             var userId = HttpContext.User.FindFirst("Id")?.Value;
 
-            if (userId == null) return null;
+            if (userId == null) return NotFound();
             
             var user = dbContext.Users.FirstOrDefault(opt => opt.Id == Convert.ToInt64(userId));
 
-            if (user == null) return null;
+            if (user == null) return NotFound();
 
             var jwtAccess = GenirateToken(15, user);
 
@@ -83,7 +83,7 @@ namespace server.Controllers
 
             catch { }
 
-            return jwtAccess;
+            return Ok(new { jwtAccess, jwtRefresh });
         }
 
         [HttpGet]

@@ -17,7 +17,9 @@ namespace server.Controllers
         [HttpGet]
         public ActionResult<List<Column?>> GetListColumns([FromForm] long ListId)
         {
-            return repositoryColumn.GetListColumns(ListId, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
+           var columns = repositoryColumn.GetListColumns(ListId, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value);
+
+            return Ok(new { columns });
 
         }
         
@@ -28,7 +30,7 @@ namespace server.Controllers
 
             if (column == null) return NotFound();
 
-            return Ok(column);
+            return Ok(new { column });
 
         }
                 
@@ -39,7 +41,7 @@ namespace server.Controllers
 
             if (column == null) return BadRequest("Лист не существует или у вас нет доступа к нему!");
 
-            return Ok(column);
+            return Ok(new { column });
         }
 
         [HttpPut]
@@ -49,7 +51,7 @@ namespace server.Controllers
 
             if (column == null) return BadRequest("Колонка не существует или у вас нет доступа к её изменению!");
 
-            return Ok(column);
+            return Ok(new { column });
 
         }
 
@@ -60,7 +62,7 @@ namespace server.Controllers
 
             if (column == null) return NotFound();
 
-            return Ok(column);
+            return Ok(new { column });
         }
 
         

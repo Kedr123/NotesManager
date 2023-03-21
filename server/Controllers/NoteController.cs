@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Interfaces;
+using server.Models;
 using server.Models.Requests;
 
 namespace server.Controllers
@@ -20,7 +21,7 @@ namespace server.Controllers
 
             if (note == null) BadRequest();
 
-            return Ok(note);
+            return Ok(new { note });
 
         }
 
@@ -33,7 +34,7 @@ namespace server.Controllers
 
             if (note == null) NotFound();
 
-            return Ok(note);
+            return Ok(new { note });
 
         }
 
@@ -44,7 +45,7 @@ namespace server.Controllers
 
             if (note == null) NotFound();
 
-            return Ok(note);
+            return Ok(new { note });
 
         }
 
@@ -55,7 +56,7 @@ namespace server.Controllers
 
             if (note == null) NotFound();
 
-            return Ok(note);
+            return Ok(new { note });
         }
 
         [HttpGet, Route("column/{id}")]
@@ -65,7 +66,7 @@ namespace server.Controllers
 
             if (notes == null) NotFound();
 
-            return Ok(notes);
+            return Ok(new { notes });
         }
 
     }

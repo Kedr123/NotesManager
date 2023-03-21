@@ -24,17 +24,17 @@ namespace server.Controllers
 
             if (list == null) NotFound();
 
-            return Ok(list);
+            return Ok(new { list });
         }
 
         [HttpGet]
         public ActionResult GetAllUserList()
         {
-            var list = repositoryList.GetAllUserLists(Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
+            var lists = repositoryList.GetAllUserLists(Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (list == null) NotFound(null);
+            if (lists == null) NotFound(null);
 
-            return Ok(list);
+            return Ok(new {lists});
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace server.Controllers
             var list = await repositoryList.CreateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
             
 
-            return Ok(list);
+            return Ok(new { list });
         }
 
         [HttpPut]
@@ -59,7 +59,7 @@ namespace server.Controllers
             
             if (list == null) NotFound(null);
 
-            return Ok(list);
+            return Ok(new { list });
         }
 
         [HttpDelete, Route("{Id}")]
@@ -69,7 +69,7 @@ namespace server.Controllers
 
             if (list == null) NotFound(null);
 
-            return Ok(list);
+            return Ok(new { list });
         }
     }
 }
