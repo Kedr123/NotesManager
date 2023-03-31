@@ -7,6 +7,7 @@ namespace server.Models.Requests
         [Required]
         public long Id { get; set; }
 
+        [StringLength(maximumLength: 25, MinimumLength = 1)]
         public string? Title { get; set; }
 
         public long? ListId { get; set; }

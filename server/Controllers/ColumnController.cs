@@ -17,7 +17,7 @@ namespace server.Controllers
         [HttpGet]
         public ActionResult<List<Column?>> GetListColumns([FromForm] long ListId)
         {
-           var columns = repositoryColumn.GetListColumns(ListId, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value);
+           var columns = repositoryColumn.GetListColumns(ListId, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
             return Ok(new { columns });
 

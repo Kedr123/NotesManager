@@ -7,6 +7,7 @@ namespace server.Models.Requests
         [Required]
         public long NoteId { get; set; }
 
+        [StringLength(maximumLength: 2048, MinimumLength = 1)]
         public string? Text { get; set; }
 
         public List<long>? IdNoteFilesDelete { get; set; }
