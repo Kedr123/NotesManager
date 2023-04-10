@@ -1,0 +1,16 @@
+import AuthPage from "@/pages/AuthPage";
+import {createRouter, createWebHistory} from "vue-router";
+
+const routes =[
+    {
+        path:"/",
+        component: AuthPage
+    },
+];
+
+const router = createRouter({
+    routes,
+    history:createWebHistory(process.env.BASE_URL)
+});
+
+export default router
