@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection(nameof(JWTSettings)));
 
+builder.Services.AddCors(options => options.AddPolicy("AllPolicy", opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;
 var issuer = builder.Configuration.GetSection("JWTSettings:Issuer").Value;
 var audience = builder.Configuration.GetSection("JWTSettings:Audience").Value;
@@ -81,9 +84,12 @@ app.Use((context, next) =>
 
 });
 
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors("AllPolicy");
 
 app.Run();
