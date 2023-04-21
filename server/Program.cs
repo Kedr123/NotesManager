@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using server;
@@ -13,7 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection(nameof(JWTSettings)));
 
-builder.Services.AddCors(options => options.AddPolicy("AllPolicy", opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
+builder.Services.AddCors(options => {
+    //options.AddPolicy("AllPolicy", opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllPolicy", opt => opt.WithOrigins("https://192.168.3.179:8080", "https://127.0.0.1:8080", "https://localhost:8080").AllowCredentials().AllowAnyHeader().AllowAnyMethod());
+    //options.AddPolicy("AllPolicy2", opt => opt.AllowCredentials());
+});
+    
 
 
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;
@@ -55,12 +69,35 @@ builder.Services.AddScoped<IRepositoryNote, RepositoryNote>();
 
 
 
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.Use(async (ctx, next) =>
+{
+    if (ctx.Request.Method.Equals("options", StringComparison.InvariantCultureIgnoreCase) && ctx.Request.Headers.ContainsKey("Access-Control-Request-Private-Network"))
+    {
+        ctx.Response.Headers.Add("Access-Control-Allow-Private-Network", "true");
+    }
+
+    await next();
+});
+app.UseCors("AllPolicy");
+//app.UseCors("AllPolicy2");
+
+
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+/*app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    HttpOnly = HttpOnlyPolicy.Always
+});*/
+
+app.UseCookiePolicy();
+
+// Подмена токина из запроса на токин из куки 
 app.Use((context, next) =>
 {
 
@@ -72,6 +109,8 @@ app.Use((context, next) =>
     context.Request.Headers.Remove("Authorization");
 
     var cookie = context.Request.Cookies["RefreshToken"];
+
+    Console.WriteLine(cookie);
 
     if (cookie != null)
     {
@@ -90,6 +129,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllPolicy");
+//app.UseCors("AllPolicy");
 
 app.Run();

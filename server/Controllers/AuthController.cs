@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,26 @@ namespace server.Controllers
 
 
 
+        [HttpGet("log")]
+        [HttpPost("log"), EnableCors]
+        public  ActionResult GetLog()
+        {
+            var cookieOptions = new CookieOptions();
+            //cookieOptions.HttpOnly = true;
+            cookieOptions.IsEssential = true;
+            //cookieOptions.Expires = DateTime.Now.AddDays(15);
+            cookieOptions.Secure = true;
+            cookieOptions.SameSite = SameSiteMode.None;
+            cookieOptions.Domain = HttpContext.Request.Host.Value;
+
+            //HttpContext.Response.Headers.Add("access-control-allow-credentials", "true");
+
+            HttpContext.Response.Cookies.Append("RefreshTokenF", "Hello, world!", cookieOptions);
+
+            return Ok("ghb");
+        }
+
+
         [HttpPost]
         public  ActionResult PostAuth(string Email, string Password)
         {
@@ -44,21 +65,29 @@ namespace server.Controllers
 
             
             var cookieOptions = new CookieOptions();
-            cookieOptions.HttpOnly = true;
+            //cookieOptions.HttpOnly = true;
+            cookieOptions.IsEssential = true;
+            //cookieOptions.Expires = DateTime.Now.AddDays(15);
+            cookieOptions.Secure = true;
+            cookieOptions.SameSite = SameSiteMode.None;
+            cookieOptions.Path = "/";
+            //cookieOptions.Domain = HttpContext.Request.Host.Value;
 
-            try
-            {
-                Request.HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
-            }
+            /*try
+            {*/
+                //HttpContext.Response.
+                HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
+                
+            /*}
             catch
             {
 
-            }
+            }*/
 
             return Ok(new { jwtAccess, jwtRefresh });
         }
 
-        [HttpPost("refresh"), Authorize]
+        [HttpPost("refresh"), Authorize, EnableCors]
         public ActionResult RefreshTokens()
         {
             var userId = HttpContext.User.FindFirst("Id")?.Value;
@@ -75,6 +104,10 @@ namespace server.Controllers
 
             var cookieOptions = new CookieOptions();
             cookieOptions.HttpOnly = true;
+            cookieOptions.IsEssential = true;
+            cookieOptions.Secure=true;
+            cookieOptions.Path = "/";
+           // cookieOptions.Expires = "";
 
             try
             {
