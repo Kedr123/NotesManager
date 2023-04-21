@@ -12,7 +12,7 @@ namespace server.Models.Requests
 
 
 
-        [FileExtensions(Extensions = "jpg,png,gif,jpeg,bmp,svg")]
+        //[FileExtensions(Extensions = "jpg,png,gif,jpeg,bmp,svg")]
         public IFormFile? Image { get; set; }
     }
 }

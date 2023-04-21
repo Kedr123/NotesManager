@@ -22,7 +22,7 @@ namespace server.Controllers
 
             var list = repositoryList.GetList(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (list == null) NotFound();
+            if (list == null) return NotFound();
 
             return Ok(new { list });
         }
@@ -32,7 +32,7 @@ namespace server.Controllers
         {
             var lists = repositoryList.GetAllUserLists(Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (lists == null) NotFound(null);
+            if (lists == null) return NotFound();
 
             return Ok(new {lists});
         }
@@ -42,10 +42,12 @@ namespace server.Controllers
         public async Task<ActionResult<Models.List>> CreateList([FromForm] RequestCreateList request)
         {
             
-            if (request == null) NotFound(null);
+            if (request == null) return NotFound();
 
 
             var list = await repositoryList.CreateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
+
+            if(list == null) return StatusCode(500);
             
 
             return Ok(new { list });
@@ -57,7 +59,7 @@ namespace server.Controllers
         {
             var list = await repositoryList.UpdateListAsync(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
             
-            if (list == null) NotFound(null);
+            if (list == null) StatusCode(500);
 
             return Ok(new { list });
         }
@@ -67,7 +69,7 @@ namespace server.Controllers
         {
             var list = await repositoryList.DeleteListAsync(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (list == null) NotFound(null);
+            if (list == null) StatusCode(500);
 
             return Ok(new { list });
         }
