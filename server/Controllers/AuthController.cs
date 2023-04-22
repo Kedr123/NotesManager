@@ -22,29 +22,6 @@ namespace server.Controllers
         public AuthController(IOptions<JWTSettings> jwtS, ApplicationDbContext dbContext)
             => (this.jwtS, this.dbContext) = (jwtS.Value, dbContext);
 
-
-
-
-        [HttpGet("log")]
-        [HttpPost("log"), EnableCors]
-        public  ActionResult GetLog()
-        {
-            var cookieOptions = new CookieOptions();
-            //cookieOptions.HttpOnly = true;
-            cookieOptions.IsEssential = true;
-            //cookieOptions.Expires = DateTime.Now.AddDays(15);
-            cookieOptions.Secure = true;
-            cookieOptions.SameSite = SameSiteMode.None;
-            cookieOptions.Domain = HttpContext.Request.Host.Value;
-
-            //HttpContext.Response.Headers.Add("access-control-allow-credentials", "true");
-
-            HttpContext.Response.Cookies.Append("RefreshTokenF", "Hello, world!", cookieOptions);
-
-            return Ok("ghb");
-        }
-
-
         [HttpPost]
         public  ActionResult PostAuth(string Email, string Password)
         {
@@ -65,25 +42,15 @@ namespace server.Controllers
 
             
             var cookieOptions = new CookieOptions();
-            //cookieOptions.HttpOnly = true;
+            cookieOptions.HttpOnly = true;
             cookieOptions.IsEssential = true;
             //cookieOptions.Expires = DateTime.Now.AddDays(15);
             cookieOptions.Secure = true;
             cookieOptions.SameSite = SameSiteMode.None;
             cookieOptions.Path = "/";
-            //cookieOptions.Domain = HttpContext.Request.Host.Value;
-
-            /*try
-            {*/
-                //HttpContext.Response.
-                HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
-                
-            /*}
-            catch
-            {
-
-            }*/
-
+            
+            HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
+              
             return Ok(new { jwtAccess, jwtRefresh });
         }
 
@@ -107,15 +74,9 @@ namespace server.Controllers
             cookieOptions.IsEssential = true;
             cookieOptions.Secure=true;
             cookieOptions.Path = "/";
-           // cookieOptions.Expires = "";
 
-            try
-            {
-                Request.HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
-            }
-
-            catch { }
-
+            Request.HttpContext.Response.Cookies.Append("RefreshToken", jwtRefresh, cookieOptions);
+            
             return Ok(new { jwtAccess, jwtRefresh });
         }
 
