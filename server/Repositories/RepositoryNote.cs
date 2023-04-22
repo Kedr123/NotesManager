@@ -97,8 +97,18 @@ namespace server.Repositories
                 newResponse.Note = dbContext.Notes.Where(opt => opt.Id == note.Id && opt.Column.list.User.Id == UserId).FirstOrDefault();
 
                 if (newResponse.Note != null) 
-                { 
-                    newResponse.Files = dbContext.NoteFiles.Where(opt => opt.Note == newResponse.Note).ToList(); 
+                {
+                    var noteFiles = dbContext.NoteFiles.Where(opt => opt.Note.Id == newResponse.Note.Id).Include(opt => opt.File).ToList();
+
+                    var files = new List<Models.File>();
+
+                    foreach (var noteFile in noteFiles)
+                    {
+                        if (noteFile.File != null)
+                            files.Add(noteFile.File);
+                    }
+                    newResponse.Files = files;
+                    
                     response.Add(newResponse);
                 }
 
@@ -115,8 +125,16 @@ namespace server.Repositories
 
             if (response.Note == null) return null;
 
-            response.Files = dbContext.NoteFiles.Where(opt => opt.Note == response.Note).ToList();
+            var noteFiles = dbContext.NoteFiles.Where(opt => opt.Note.Id == response.Note.Id).Include(opt=>opt.File).ToList();
 
+            var files = new List<Models.File>();
+
+            foreach (var noteFile in noteFiles)
+            {
+                if(noteFile.File != null)
+                    files.Add(noteFile.File);
+            }
+            response.Files = files;
             return response;
         }
 
@@ -153,7 +171,7 @@ namespace server.Repositories
 
                 foreach(var id in request.IdNoteFilesDelete)
                 {
-                    var file = dbContext.NoteFiles.Where(opt=>opt.Id == id && opt.Note.Column.list.User.Id==UserId).Include(u=>u.File).FirstOrDefault();
+                    var file = dbContext.NoteFiles.Where(opt=>opt.File.Id == id && opt.Note.Column.list.User.Id==UserId).Include(u=>u.File).FirstOrDefault();
 
                     Console.BackgroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine(file.File.FileName);
