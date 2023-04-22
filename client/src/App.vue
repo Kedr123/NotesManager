@@ -31,7 +31,7 @@ export default {
 #app {
   background: linear-gradient(107.56deg, #45535A 41.15%, #445542 100%);
   height: 100vh;
-  width: 100vw;
+  width: 100%;
 }
 
 .app{
