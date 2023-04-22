@@ -127,16 +127,17 @@ export default {
           return;
         }
 
-        let res = await UserService.authorisation(this.email, this.password);
+        let response = await UserService.authorisation(this.email, this.password);
 
-        if (res?.errors) {
+        if (!response.result) {
+          let res = response.response
           this.errors.password = res.errors?.Password ? res.errors?.Password : res.errors?.password;
           this.errors.email = res.errors?.Email ? res.errors?.Email : res.errors?.email;
           return;
         }
 
 
-        localStorage.setItem("token", res?.jwtAccess);
+        localStorage.setItem("token", response.response?.jwtAccess);
         this.$router.push({name:"ListsPage"});
       }
     }
