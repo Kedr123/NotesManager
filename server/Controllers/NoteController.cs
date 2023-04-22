@@ -19,7 +19,7 @@ namespace server.Controllers
         {
             var note = await repositoryNote.CreateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (note == null) BadRequest();
+            if (note == null) return StatusCode(500);
 
             return Ok(new { note });
 
@@ -32,7 +32,7 @@ namespace server.Controllers
 
             var note = await repositoryNote.UpdateNote(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (note == null) NotFound();
+            if (note == null) return StatusCode(500);
 
             return Ok(new { note });
 
@@ -43,7 +43,7 @@ namespace server.Controllers
         {
             var note = await repositoryNote.DeleteNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (note == null) NotFound();
+            if (note == null) return StatusCode(500);
 
             return Ok(new { note });
 
@@ -54,7 +54,7 @@ namespace server.Controllers
         {
             var note = repositoryNote.GetNote(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (note == null) NotFound();
+            if (note == null) return NotFound();
 
             return Ok(new { note });
         }
@@ -64,7 +64,7 @@ namespace server.Controllers
         {
             var notes = repositoryNote.GetAllNotesColumn(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (notes == null) NotFound();
+            if (notes == null) return NotFound();
 
             return Ok(new { notes });
         }

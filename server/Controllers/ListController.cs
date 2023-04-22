@@ -38,7 +38,7 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        [RequestSizeLimit(1024*1024*10)]
+        [RequestSizeLimit(1024*1024*50)]
         public async Task<ActionResult<Models.List>> CreateList([FromForm] RequestCreateList request)
         {
             

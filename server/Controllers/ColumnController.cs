@@ -14,8 +14,8 @@ namespace server.Controllers
 
         public ColumnController(IRepositoryColumn repositoryColumn) => (this.repositoryColumn) = (repositoryColumn);
 
-        [HttpGet]
-        public ActionResult<List<Column?>> GetListColumns([FromForm] long ListId)
+        [HttpGet, Route("list/{ListId}")]
+        public ActionResult<List<Column?>> GetListColumns(long ListId)
         {
            var columns = repositoryColumn.GetListColumns(ListId, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
@@ -39,7 +39,8 @@ namespace server.Controllers
         {
             var column =  await repositoryColumn.CreateColumn(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (column == null) return BadRequest("Лист не существует или у вас нет доступа к нему!");
+            //if (column == null) return BadRequest("Лист не существует или у вас нет доступа к нему!");
+            if (column == null) return StatusCode(500);
 
             return Ok(new { column });
         }
@@ -49,7 +50,7 @@ namespace server.Controllers
         {
             var column = await repositoryColumn.UpdateColumn(request, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (column == null) return BadRequest("Колонка не существует или у вас нет доступа к её изменению!");
+            if (column == null) return StatusCode(500);
 
             return Ok(new { column });
 
@@ -60,7 +61,7 @@ namespace server.Controllers
         {
             var column = await repositoryColumn.DeleteColumn(Id, Convert.ToInt64(HttpContext.User.FindFirst("Id")?.Value));
 
-            if (column == null) return NotFound();
+            if (column == null) return StatusCode(500);
 
             return Ok(new { column });
         }
